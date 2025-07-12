@@ -4,10 +4,8 @@ const User = require("../models/UserModel");
 
 exports.signup = async (req, res) => {
   const { name, email, password } = req.body;
-  console.log("SIGNUP:", req.body);
   try {
     const existing = await User.findByEmail(email);
-    console.log("EXISTING:", existing);
     if (existing)
       return res.status(400).json({ message: "Email already in use" });
 
