@@ -1,26 +1,28 @@
 const mysql = require("mysql2/promise");
-// require("dotenv").config({ path: __dirname + "/../.env" });
+require("dotenv").config();
 
-console.log("Connecting to DB with:");
-console.log("HOST:", process.env.DB_HOST);
-console.log("USER:", process.env.DB_USER);
-console.log("PASSWORD:", process.env.DB_PASSWORD ? "***" : "(empty)");
-console.log("DB NAME:", process.env.DB_NAME);
+console.log(process.env.DB_URL);
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+const pool = mysql.createPool(
+  process.env.DB_URL || {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+  }
+);
 
 pool
   .getConnection()
   .then((conn) => {
-    console.log("✅ DB connected with user:", process.env.DB_USER);
+    console.log(
+      "✅ DB connected with user:",
+      process.env.DB_USER || process.env.DATABASE_URL
+    );
     conn.release();
   })
   .catch((err) => {
