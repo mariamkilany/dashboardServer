@@ -8,9 +8,25 @@ const ProductRoutes = require("./routes/ProductRoutes");
 const userRoutes = require("./routes/UserRoutes");
 const cookieParser = require("cookie-parser");
 
+// CORS configuration
+const allowedOrigins = [
+  "https://react-dash-psi.vercel.app",
+  "http://localhost:5173", // For local development
+  "http://localhost:3000", // For local development
+];
+
 app.use(
   cors({
-    origin: "https://react-dash-psi.vercel.app",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
